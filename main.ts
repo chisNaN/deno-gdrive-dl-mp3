@@ -1,8 +1,6 @@
 // main.ts
 
-import { serve } from "https://deno.land/std/http/server.ts";
-
-serve(async (req) => {
+Deno.serve(async (req) => {
   const url = new URL(req.url);
   const fileId = url.searchParams.get("id");
 
@@ -14,7 +12,6 @@ serve(async (req) => {
 
   try {
     const driveRes = await fetch(driveUrl, {
-      method: "GET",
       redirect: "follow",
     });
 
@@ -22,12 +19,11 @@ serve(async (req) => {
       return new Response("Failed to fetch file", { status: 502 });
     }
 
-    // 👇 important pour audio
-    const headers = new Headers();
-    headers.set("Content-Type", driveRes.headers.get("content-type") || "audio/mpeg");
+    const headers = new Headers(driveRes.headers);
+    headers.set("Access-Control-Allow-Origin", "*"); // 🔥 utile pour ton frontend
 
     return new Response(driveRes.body, {
-      status: 200,
+      status: driveRes.status,
       headers,
     });
 
