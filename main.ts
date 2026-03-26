@@ -24,7 +24,13 @@ Deno.serve(async (req) => {
 
     return new Response(driveRes.body, {
       status: driveRes.status,
-      headers,
+      //headers,
+      headers: {
+    "Content-Type": "audio/mpeg",
+    "Access-Control-Allow-Origin": "*",
+    "Accept-Ranges": "bytes",
+    "Cache-Control": "public, max-age=86400"
+  }
     });
 
   } catch (err) {
